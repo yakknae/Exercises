@@ -1,0 +1,66 @@
+Enunciado:
+Crea una función en SQL llamada calcular_descuento que reciba dos parámetros: precio y descuento_porcentaje. 
+La función debe calcular el precio final después de aplicar el descuento y devolver el precio con el descuento aplicado.
+
+create function calcular_porcentaje(@precio float, @descuento_porcentaje float)
+returns float
+as
+begin 
+declare @precio_final float = 0
+set @precio_final= (@precio * @descuento_porcentaje) / 100;
+return @precio_final;
+end;
+select db_owner.calcular_porcentaje(1000,12);
+
+Enunciado:
+Crea un trigger llamado actualizar_stock que se active después de una inserción en la tabla detalles_ventas.
+Este trigger debe reducir el stock en la tabla productos de acuerdo con la cantidad de productos vendidos.
+
+
+create trigger actualizar_stock on detalles_ventas 
+after insert
+as
+begin
+	update productos
+	set stock = stock - i.cantidad
+	from productos p inner join inserted i on p.producto_id = i.producto_id;
+end;
+
+
+Enunciado:
+Crea un procedimiento almacenado llamado actualizar_precio que reciba el producto_id y un nuevo precio.
+El procedimiento debe actualizar el precio del producto en la tabla productos.
+
+create procedure actualizar_precio @producto_id int, @nuevo_precio float 
+as 
+begin
+	update productos
+	set precio = @nuevo_precio
+	where producto_id = @producto_id;
+end;
+
+Enunciado:
+Crea una función llamada calcular_factorial que reciba un número entero positivo y devuelva el factorial de ese número. 
+La función debe utilizar un ciclo WHILE para calcular el factorial y una condición IF para validar que el número sea positivo.
+
+create function calcular_factorial(@numero int)
+returns int
+as 
+begin
+declare @contador int  = @numero; 
+declare @resultado int = 1;
+
+	if(@numero < 0)
+		return null;
+	else if (@numero = 0)
+		return 1;
+
+while(@contador > 1)
+begin
+	set @resultado = @resultado * @contador;
+	set @contador = @contador - 1;
+end;
+return @resultado;
+end;
+
+select db_owner.calcular_factorial(3);
