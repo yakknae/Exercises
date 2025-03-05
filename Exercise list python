@@ -145,17 +145,29 @@ generate_report(80, 70, 75)
 
 #-------------------------------------------------------------------------
 #Ejercicio 14
-edad = input("ingrese edad: (opcional) ")
-  if edad.lower() == "none":
+
+personas = {}  # Inicializar el diccionario
+
+nombre = input("Ingrese nombre: ") 
+edad = input("Ingrese edad: (opcional) ")
+if edad.lower() == "none":
     edad = None 
-  localidad = input("ingrese localidad: (opcional) ")
-  if localidad.lower() == "none":
+localidad = input("Ingrese localidad: (opcional) ")
+if localidad.lower() == "none":
     localidad = None 
-  domicilio = input("ingrese localidad: (opcional) ")
-  if domicilio.lower() == "none":
+domicilio = input("Ingrese domicilio: (opcional) ") 
+if domicilio.lower() == "none":
     domicilio = None 
-  personas[nombre] = {"edad": edad, "localidad": localidad, "domicilio": domicilio}
+
+personas[nombre] = {
+    "edad": edad,
+    "localidad": localidad,
+    "domicilio": domicilio
+}
+
 print(personas)
+
+
 
 #-------------------------------------------------------------------------
 #Ejercicio 15
