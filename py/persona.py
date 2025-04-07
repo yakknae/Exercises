@@ -13,7 +13,8 @@ class Persona:
 # FUNCION AGREGAR PERSONA
     @staticmethod
     def agregar_persona(personas):
-        print("###########################\n")
+        print("###########################")
+        print("Agregar persona a la lista\n")
         nombre = input("Ingrese el nombre: ").strip()
         edad = int(input("Ingrese la edad: "))
         ciudad = input("Ingrese la ciudad: ").strip()
@@ -23,18 +24,20 @@ class Persona:
     
 # FUNCION BUSCAR CIUDAD   
     @staticmethod
-    def buscar_ciudad(personas,ciudad_buscada):
+    def buscar_ciudad(personas,):
         print("\n###########################\n")
-        print(f"personas que viven en la ciudad buscada {ciudad_buscada}: ")
+        ciudad_buscada = input("Ingrese la ciudad de una persona: ").strip()
+        print(f"personas que viven en la ciudad buscada ({ciudad_buscada}): ")
         for person in personas:
             if ciudad_buscada.lower() == person.ciudad.lower():
                 print(person)
 
 # BUSCAR NOMBRE PERSONA
     @staticmethod
-    def buscar_nombre(personas,nombre):
+    def buscar_nombre(personas):
         print("\n###########################\n")
-        print(f"personas que tienen el nombre: {nombre} ")
+        nombre = input("Ingrese el nombre de una persona a buscar: ").strip()
+        print(f"personas que tienen el nombre: ({nombre}) ")
         for person in personas:
             if nombre.lower() == person.nombre.lower():
                 print(person,"\n")
@@ -118,20 +121,20 @@ mascotas = [
 ]
 
 
-# Mostrar las personas que viven en la ciudad buscada
-Persona.buscar_ciudad(personas,"Ituzaingo");
+# Mostrar la lista actualizada de personas
+Persona.lista_personas(personas)
 
-# Mostrar las personas que tienen el nombre buscado
-Persona.buscar_nombre(personas,"Juan")
+# Mostrar la lista actualizada de mascotas
+Mascota.lista_mascotas(mascotas)
 
 # Agregar persona a la lista
 Persona.agregar_persona(personas)
 
-# Mostrar la lista actualizada de personas
-Persona.lista_personas(personas)
+# Mostrar las personas que viven en la ciudad buscada
+Persona.buscar_ciudad(personas);
 
-# Mostrar la lista actualizada de personas
-Mascota.lista_mascotas(mascotas)
+# Mostrar las personas que tienen el nombre buscado
+Persona.buscar_nombre(personas)
 
 # Asignar mascota a dueño/a
 asignar_mascota(personas,mascotas)
