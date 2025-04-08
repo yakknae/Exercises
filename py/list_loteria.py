@@ -1,3 +1,4 @@
+#Clase jugada
 class Jugada:
     def __init__(self,numero,monto,dni):
         self.numero= numero
@@ -6,17 +7,19 @@ class Jugada:
     
     def __str__(self):
         return f" monto: {self.monto}, dni: {self.dni}, Número: {self.numero}"
-
+        
+#Clase loteria
 class Loteria:
     def __init__(self,numero_ganador):
         self.numero_ganador = numero_ganador
-
+        
+#Funcion verificar_ganador
     def verificar_ganador(self,jugadas):
         for jugada  in jugadas:
             num_str = str(jugada.numero)
             ganador_str = str(self.numero_ganador)
 
-                # Comparar los dígitos finales
+            # Comparar los dígitos finales
             coincidencias = 0
                 
                 # Verificar si el número jugado tiene los mismos últimos dígitos que el número ganador
@@ -25,6 +28,8 @@ class Loteria:
                         coincidencias += 1
                 else:
                     break  
+                    
+            #coinicidencias:
             if coincidencias  == 1:
                 pozo = jugada.monto * 7
                 print(f"el ganador es la persona con dni:{jugada.dni}, con los numeros: {jugada.numero}")
@@ -46,7 +51,8 @@ jugadas=[
     Jugada(51, 1500,"77765653")
 ]  
 
-Loteria= Loteria(350)
+#Inicializo el numero ganador
+Loteria = Loteria(350)
 
 #Funcion a llamar
 Loteria.verificar_ganador(jugadas);
