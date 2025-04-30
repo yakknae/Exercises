@@ -38,3 +38,47 @@ def invertir_palabra(palabra):
 palabra = input("Escriba una palabra: ")
 palabra_invertida = invertir_palabra(palabra)
 print(f"la palabra fue {palabra} y invertida queda {palabra_invertida}")
+
+print("--------------Ejercicio 3-------------------")
+class Tarea:
+    def __init__(self,titulo,descripcion):
+        self.titulo = titulo
+        self.descripcion = descripcion
+
+    def __str__(self):
+        return f"el titulo de la tarea es {self.titulo} y la descripcion es {self.descripcion}"
+
+class Pila:
+    def  __init__(self):
+        self.cola = deque()
+
+    def agregar_Tarea(self,tarea):
+        self.cola.append(tarea)
+    
+    def eliminar_Tarea(self):
+        if self.vacia2():
+            print("no hay tareas")
+        else:
+            tarea_eliminada = self.cola.pop()
+            print(f"la tarea eliminada fue {tarea_eliminada}")
+    
+    def mostrar_Tareas(self):
+        print("las tareas son")
+        for f in self.cola:
+            print(f"{f}")
+    
+    def vacia2(self):
+        return len(self.cola)==0
+    
+pila = Pila()
+tarea1 = Tarea("examen","lokura")
+tarea2 = Tarea("examen11","tremendo")
+
+pila.agregar_Tarea(tarea1)
+pila.agregar_Tarea(tarea2)
+
+pila.mostrar_Tareas()
+
+pila.eliminar_Tarea()
+
+pila.mostrar_Tareas()
