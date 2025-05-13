@@ -31,8 +31,8 @@ class ClienteWeb(Cliente):
 # Sistema de atención
 class SistemaAtencion:
     def __init__(self):
-        self.cola_telefonicos = deque()
-        self.cola_web = deque()
+        # Cola unificada para todos los clientes
+        self.cola_clientes = deque()
         self.historial = []
 
     def agregar_cliente_telefonico(self):
@@ -41,7 +41,7 @@ class SistemaAtencion:
         dni = input("Ingrese el DNI del cliente telefónico: ").lower().strip()
         telefono = input("Ingrese el número de teléfono: ").lower().strip()
         cliente = ClienteTelefonico(nombre, apellido, dni, telefono)
-        self.cola_telefonicos.append(cliente)
+        self.cola_clientes.append(cliente)
         print(f"Cliente telefónico '{nombre} {apellido}' agregado a la cola.")
 
     def agregar_cliente_web(self):
@@ -50,18 +50,14 @@ class SistemaAtencion:
         dni = input("Ingrese el DNI del cliente web: ").lower().strip()
         email = input("Ingrese el correo electrónico: ").lower().strip()
         cliente = ClienteWeb(nombre, apellido, dni, email)
-        self.cola_web.append(cliente)
+        self.cola_clientes.append(cliente)
         print(f"Cliente web '{nombre} {apellido}' agregado a la cola.")
 
     def atender_siguiente_cliente(self):
-        if self.cola_telefonicos:
-            cliente = self.cola_telefonicos.pop()
-        elif self.cola_web:
-            cliente = self.cola_web.pop()
-        else:
+        if not self.cola_clientes:
             print("No hay clientes en espera.")
             return
-
+        cliente = self.cola_clientes.popleft()
         print(f"Atendiendo a: {cliente}")
         self.historial.append(cliente)
 
