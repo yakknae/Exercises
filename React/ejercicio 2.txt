@@ -1,0 +1,95 @@
+import { View,Text, SafeAreaView, StyleSheet } from 'react-native';
+
+
+export default function App() {
+  return (
+<View style={styles.contenedor}>
+  {/*seccion 1*/}
+  <View style={[styles.fila ,{backgroundColor:'grey'}]}>
+    <View style={styles.celda}><Text>Sección 1</Text></View>
+  </View>
+
+
+
+
+  {/*seccion 2*/}
+  <View style={styles.fila}>
+  {/*columna izq*/}
+    <View style={[styles.columnaIzq,{backgroundColor:'orange'}]}>
+     <View style={styles.celda}><Text>Sección izq</Text></View>
+    </View>
+    {/*columna der*/}
+    <View style={styles.columnaDer}> 
+    {/*columna der superior*/}
+      <View style={styles.filaSuperiorDer}>
+        <View style={styles.celdaDerArriba}>
+          <Text>Arriba 1</Text>
+        </View>
+        <View style={[styles.celdaDerArriba,{ backgroundColor: 'blue' }]}>
+            <Text>Arriba 2</Text>
+        </View>
+      </View>
+      {/*columna der inferior*/}
+      <View style={[styles.celdaDerAbajo,{backgroundColor:'green'}]}>
+        <Text>Seccion der inf</Text>
+      </View>
+    </View>
+  </View>
+
+    {/*seccion 3*/}
+    <View style={[styles.fila,{backgroundColor:'yellow'}]}>
+      <View style={styles.celda}>
+      <Text>Seccion seccion 3</Text>
+      </View>
+    </View>
+</View>
+  );
+}
+
+const styles = StyleSheet.create({
+  contenedor: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'stretch',
+    paddingHorizontal: 10,
+    backgroundColor: '#f0f0f0',
+  },
+fila:{
+  flex:0.33,
+  flexDirection:'row',
+},
+celda:{
+  flex:1,
+  justifyContent:'center',
+  alignItems:'center',
+  borderWidth:1,
+  borderColor:'red',
+},
+columnaIzq:{
+  flex:70,
+},
+columnaDer:{
+  flex:30,
+},
+filaSuperiorDer:{
+flex:1,
+flexDirection:'row',
+},
+  celdaDerArriba: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'purple',
+    backgroundColor: 'red',
+  },
+celdaDerAbajo: {
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'orange',
+    backgroundColor: '#ffd0d0',
+  },
+  });
