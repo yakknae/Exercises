@@ -1,0 +1,89 @@
+import { View,Text, SafeAreaView, StyleSheet } from 'react-native';
+
+
+export default function App() {
+  return (
+<View style={styles.contenedor}>
+  {/*seccion 1 y 2 30% */}
+  <View style={styles.fila30}>
+    {/*seccion 1*/}
+    <View style={styles.celda}><Text>Sección 1</Text></View>
+
+    {/*seccion 2 lado izquierdo*/}
+    <View style={styles.celdaSection2}>
+
+      {/*seccion 2 lado izquierdo*/}
+      <View style={styles.section2Left}>
+        <View style={styles.celdaLeft}><Text>Sección left</Text></View>
+      </View>
+
+      {/*seccion 2 lado derecho*/}
+      <View style={styles.section2Right}>
+        <View style={styles.celdaRight}><Text>Sección right 1 </Text></View>
+        <View style={styles.celdaRight}><Text>Sección right 2</Text></View>
+      </View>
+    </View>
+  </View>
+  {/*seccion 3 y 4 70% */}
+  <View style={styles.fila70}>
+    <View style={styles.celda}><Text>Sección 3</Text></View>
+    <View style={styles.celda}><Text>Sección 4</Text></View>
+  </View>
+</View>
+
+  );
+}
+
+const styles = StyleSheet.create({
+  contenedor: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'stretch',
+    paddingHorizontal: 10,
+    backgroundColor: '#f0f0f0',
+  },
+fila30:{
+  flex:0.30,
+  flexDirection:'row',
+},
+fila70:{
+  flex:1,
+  flexDirection:'row',
+},
+celda:{
+  flex:1,
+  justifyContent:'center',
+  alignItems:'center',
+  borderWidth:1,
+  borderColor:'red',
+},
+celdaSection2:{
+  flex:1,
+  flexDirection:'row',
+  borderWidth:1,
+  borderColor:'red',
+},
+  section2Left: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: 'blue',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }, 
+section2Right: {
+    flex: 1,
+    flexDirection: 'column',
+    borderWidth: 1,
+    borderColor: 'green',
+  },
+  celdaRight: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: 'purple',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+
+  });
