@@ -1,0 +1,71 @@
+import React, { useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Animated,
+} from 'react-native';
+
+function Notif({ backgroundColor, text, delay }) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.8)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        delay,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 5,
+        delay,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+  return (
+    <Animated.View
+      style={[
+        styles.notif,
+        {
+          backgroundColor,
+          opacity: fadeAnim,
+          transform: [{ scale: scaleAnim }],
+        },
+      ]}
+    >
+      <Text>{text}</Text>
+    </Animated.View>
+  );
+}
+export default function App(){
+  return(
+    <View style={styles.contenedor}>
+    <Notif backgroundColor="lightgreen" text="Aceptado" delay={0}/>
+    <Notif backgroundColor="yellow" text="Precaucion" delay={0}/>
+    <Notif backgroundColor="red" text="Denegado" delay={0}/>
+    </View>
+  )
+}
+const styles = StyleSheet.create({
+  contenedor: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'stretch',
+    paddingHorizontal: 10,
+    backgroundColor: '#222',
+    height:59
+  },
+  notif:{
+display:1,
+alignItems:'center',
+justifyContent:'center',
+ borderRadius: 20,
+ height:40,
+  },
+
+  });
