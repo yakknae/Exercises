@@ -99,6 +99,11 @@ class ArbolBinario:
             return 0
         return nodo.altura # Usa 0 si no tiene altura asignada
 
+    def imprimir_alturas(self, nodo):
+        if nodo:
+            print(f"Nodo({nodo.valor}) -> Altura: {nodo.altura}")
+            self.imprimir_alturas(nodo.izq)
+            self.imprimir_alturas(nodo.der)
 
     def hojas(self):
         return self._hojas_recursivo(self.raiz)
@@ -155,6 +160,9 @@ print(f"raiz.der.der: {arbol.raiz.der.der}")
 print("Factor de balanceo del nodo raíz:", arbol.factor_balanceo(arbol.raiz))
 print("Altura del árbol:", arbol.altura(arbol.raiz))    
 print("Hojas del árbol:", arbol.hojas())
+
+print("\nAlturas de los nodos:")
+arbol.imprimir_alturas(arbol.raiz)
 
 print("\nRecorrido preorden:")
 arbol.preorden(arbol.raiz)
