@@ -1,0 +1,209 @@
+CREATE DATABASE mercado;
+go;
+CREATE TABLE producto(
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    NOMBRE VARCHAR(59)
+    FECHA_VENCIMIENTO DATE,
+    PRECIO DECIMAL(10,2)
+    ID_PROVEEDOR INT,
+    FOREIGN KEY (ID_PROVEEDOR) REFERENCES proveedor(ID)
+)
+
+CREATE TABLE proveedor(
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    NOMBRE VARCHAR(59),
+    TELEFONO INT,
+)
+
+CREATE TABLE venta(
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    FECHA_VENTA DATE,
+    TIPO_FACTURA VARCHAR(40),
+    PRECIO_FINAL FLOAT
+    ID_PRODUCTO INT,
+    FOREIGN KEY (ID_PRODUCTO) REFERENCES producto(ID)
+)
+
+CREATE TABLE detalleVenta(
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    ID_VENTA INT,
+    ID_PRODUCTO INT,
+    CANTIDAD INT,
+    PRECIO_UNITARIO FLOAT,
+    FOREIGN KEY (ID_VENTA) REFERENCES venta(ID),
+    FOREIGN KEY (ID_PRODUCTO) REFERENCES producto(ID)
+)
+
+CREATE TABLE cliente(
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    NOMBRE VARCHAR(50),
+    APELLIDO VARCHAR(50),
+    DNI INT UNIQUE,
+)
+
+CREATE TABLE compra(
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    FECHA_COMPRA DATE,
+    PRECIO_FINAL FLOAT,
+
+)
+
+CREATE TABLE detalleCompra(
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    PRECIO_UNITARIO FLOAT,
+    CANTIDAD int,
+    ID_COMPRA INT ,
+    ID_PRODUCTO INT,
+    FOREIGN KEY (ID_PRODUCTO) REFERENCES producto(ID)
+    FOREIGN KEY (ID_COMPRA) REFERENCES compra(ID),
+)
+
+
+select p.NOMBRE as nombre_producto, SUM(V.CANTIDAD) as total from producto p join venta v on v.id == p.id where month(v.fecha) = 3 and year(v.fecha) = 2025 order by total desc limit 1;
+
+select c.nombre, sum(v.total) as gasto_total from cliente c join venta v on v.id == c.id order by gasto_total desc limit 1
+
+select p.nombre, p.precio, p.provincia from producto p order by p.provincia asc , p.precio desc
+
+------------------------------------------------------------------------------- F I N A L --------------------------------------------------------------------------
+--- 
+
+1) un almacen quiere llevar los documentos sobre las ventas de su local, sus documentos que tienen son: remito, orden de compra, nota devolucion, factura. (se puede agregar entidades como la de productos, clientes, detalles de compra, detalle de devolucion) 
+a)der (acordarse de que la relacion de las tablas va en el medio el rombo, hoja carpeta)
+b) normalizacion (PK, FK)
+c) ddl de 3 tablas relacionadas
+
+2) dependencia funcional R{a,b,c,d,e,f} F{b->f, cd-> c, da-> d}
+a) 2 claves candidatas (tener en cuenta que aca tenes que agarrar de a una letra digamos A y no agregar AD o AC solo con A hasta donde podes llegar, en el caso de b+ abarca B{b,f})
+b) b+
+c) ca - > f
+
+3) personas(idPersona, nyap, fecnac, idtipo), tipos(idtipo, tipo)
+a) la chica mas "linda" del año 1990
+b) 'personas de la decada del 80'
+c) "trigger para que no se pueda ingresar personas con mas de 100 años de edad"
+
+---
+ 
+1)c) 
+-- Crear la base de datos
+CREATE DATABASE almacen;
+USE almacen;
+
+-- 1. Tabla: Cliente
+CREATE TABLE cliente (
+    id_cliente INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    dni VARCHAR(20) UNIQUE NOT NULL,
+    telefono VARCHAR(15),
+    email VARCHAR(100),
+    fecha_alta DATE DEFAULT (CURDATE())
+);
+
+-- 2. Tabla: Producto
+CREATE TABLE producto (
+    id_producto INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(150) NOT NULL,
+    descripcion TEXT,
+    precio DECIMAL(10,2) NOT NULL CHECK (precio >= 0),
+    stock INT DEFAULT 0 CHECK (stock >= 0),
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 3. Tabla: Factura
+CREATE TABLE factura (
+    id_factura INT PRIMARY KEY AUTO_INCREMENT,
+    fecha DATE NOT NULL DEFAULT (CURDATE()),
+    tipo CHAR(1) NOT NULL DEFAULT 'B' CHECK (tipo IN ('A', 'B', 'C')),
+    total DECIMAL(12,2) DEFAULT 0.00,
+    id_cliente INT NOT NULL,
+    FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- 4. Tabla: Detalle de Venta (relaciona factura y producto)
+CREATE TABLE detalle_venta (
+    id_detalle INT PRIMARY KEY AUTO_INCREMENT,
+    id_factura INT NOT NULL,
+    id_producto INT NOT NULL,
+    cantidad INT NOT NULL CHECK (cantidad > 0),
+    precio_unitario DECIMAL(10,2) NOT NULL,
+    subtotal AS (cantidad * precio_unitario) STORED, -- Columna calculada
+    FOREIGN KEY (id_factura) REFERENCES factura(id_factura) ON DELETE CASCADE,
+    FOREIGN KEY (id_producto) REFERENCES producto(id_producto) ON DELETE RESTRICT
+);
+
+-- 5. Tabla: Remito (asociado a una factura)
+CREATE TABLE remito (
+    id_remito INT PRIMARY KEY AUTO_INCREMENT,
+    fecha DATE NOT NULL DEFAULT (CURDATE()),
+    id_factura INT UNIQUE, -- 1:1 con factura
+    observaciones TEXT,
+    FOREIGN KEY (id_factura) REFERENCES factura(id_factura) ON DELETE CASCADE
+);
+
+-- 6. Tabla: Nota de Devolución
+CREATE TABLE nota_devolucion (
+    id_nota INT PRIMARY KEY AUTO_INCREMENT,
+    fecha DATE NOT NULL DEFAULT (CURDATE()),
+    id_factura INT NOT NULL,
+    motivo_general VARCHAR(200),
+    FOREIGN KEY (id_factura) REFERENCES factura(id_factura) ON DELETE RESTRICT
+);
+
+-- 7. Tabla: Detalle de Devolución
+CREATE TABLE detalle_devolucion (
+    id_detalle_dev INT PRIMARY KEY AUTO_INCREMENT,
+    id_nota INT NOT NULL,
+    id_producto INT NOT NULL,
+    cantidad INT NOT NULL CHECK (cantidad > 0),
+    motivo VARCHAR(200),
+    FOREIGN KEY (id_nota) REFERENCES nota_devolucion(id_nota) ON DELETE CASCADE,
+    FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
+);
+
+-- 8. Tabla: Orden de Compra (cliente pide productos)
+CREATE TABLE orden_compra (
+    id_orden INT PRIMARY KEY AUTO_INCREMENT,
+    fecha DATE NOT NULL DEFAULT (CURDATE()),
+    id_cliente INT NOT NULL,
+    estado VARCHAR(20) DEFAULT 'pendiente' CHECK (estado IN ('pendiente', 'procesada', 'cancelada')),
+    FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente) ON DELETE CASCADE
+);
+
+3) 
+a)
+SELECT nyap FROM personas
+WHERE YEAR(fecnac) = 1990
+LIMIT 1;
+
+b)
+SELECT nyap, fecnac FROM personas
+WHERE YEAR(fecnac) BETWEEN 1980 AND 1989
+ORDER BY fecnac;
+
+c)
+DELIMITER $$
+CREATE TRIGGER tr_no_mas_100_anios
+BEFORE INSERT ON personas
+FOR EACH ROW
+BEGIN
+    IF NEW.fecnac < DATE_SUB(CURDATE(), INTERVAL 100 YEAR) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se puede registrar a una persona con más de 100 años.';
+    END IF;
+END$$
+
+DELIMITER ;
+
+{
+
+ 1. CURDATE()
+Es una función de MySQL que devuelve la fecha de hoy.
+Ejemplo: si hoy es 5 de abril de 2025 → CURDATE() devuelve '2025-04-05'
+
+2. DATE_SUB(CURDATE(), INTERVAL 100 YEAR)
+DATE_SUB() → función que resta tiempo a una fecha.
+Aquí: resta 100 años a la fecha actual.
+
+}
