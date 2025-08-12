@@ -140,6 +140,63 @@ class ArbolBinario:
         self._actualizar_altura(y)
 
         return y
+    
+    def buscar(self,dato):
+        def _buscar_rec(nodo,valor,padre=None):
+            """
+            Parámetros:
+            - nodo: el nodo actual donde estamos buscando.
+            - valor: el valor que queremos encontrar.
+            - padre: el nodo que está un nivel arriba (el 'padre' del nodo actual).
+            """
+            
+            # PASO 1: Verifica si hay nodo
+            if nodo is None:
+                return None, None, None, None, None # nodo, padre, ubicacion, hijo_izq, hijo_der
+            
+            # PASO 2: ¿este el nodo que buscamos?
+            if valor == nodo.valor:
+                if padre is None:
+                    # Si no tiene padre, entonces es la RAÍZ del árbol
+                    ubicacion = "raiz"
+                elif nodo == padre.izq:
+                    # Si este nodo es el hijo izquierdo del padre
+                    ubicacion = "izq"
+                else:
+                    # Si no es raíz ni izquierdo, entonces es el derecho
+                    ubicacion = "der"
+
+                # vamos a ver quiénes son sus hijos (si existen)
+                # Hijo izquierdo
+                if nodo.izq is not None:
+                    # Si existe un nodo a la izquierda, guardamos su valor
+                    hijo_izq = nodo.izq.valor
+                else:
+                    hijo_izq = None
+
+                # Hijo derecho
+                if nodo.der is not None:
+                    hijo_der = nodo.der.valor
+                else: 
+                    hijo_der = None
+
+                # Devolvemos toda la información útil
+                return nodo, padre, ubicacion, hijo_izq, hijo_der
+            
+            # Paso 3: Aún no lo encontramos.
+            elif valor < nodo.valor:
+                # El valor que buscamos es MENOR que el del nodo actual
+                return _buscar_rec(nodo.izq,valor,nodo)
+            else:
+                # El valor que buscamos es MAYOR que el del nodo actual
+                return _buscar_rec(nodo.der, valor,nodo)
+            
+        # Iniciamos la búsqueda desde la RAÍZ del árbol
+        # Empezamos con 'padre = None' porque la raíz no tiene padre
+        return _buscar_rec(self.raiz,dato)
+
+        
+
 
 
 
@@ -152,7 +209,7 @@ for v in valores:
     arbol.agregar(v)
     print("-")
 
-print(f"raiz.raiz: {arbol.raiz}")
+print(f"raiz: {arbol.raiz}")
 print(f"raiz.izq: {arbol.raiz.izq}")
 print(f"raiz.der: {arbol.raiz.der}")
 print(f"raiz.der.der: {arbol.raiz.der.der}")
@@ -170,3 +227,13 @@ print("\nRecorrido postorden:")
 arbol.postorden(arbol.raiz)
 print("\nRecorrido Inorden:")
 arbol.inorden(arbol.raiz)
+
+nodo, padre, ubicacion, h_izq, h_der = arbol.buscar(3)
+if nodo:
+    print(f"✅ Encontrado: {nodo.valor}")
+    print(f"🔹 Padre: {padre.valor if padre else 'Ninguno (es raíz)'}")
+    print(f"🔹 Ubicación: {ubicacion}")
+    print(f"🔹 Hijo izquierdo: {h_izq}")
+    print(f"🔹 Hijo derecho: {h_der}")
+else:
+    print("❌ No encontrado")
