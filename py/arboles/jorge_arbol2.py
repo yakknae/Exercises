@@ -196,7 +196,45 @@ class ArbolBinario:
         return _buscar_rec(self.raiz,dato)
 
         
+    def eliminar(self,valor):
+        nodo, padre, ubicacion, h_izq, h_der = arbol.buscar(valor)
 
+        # sin hijos
+        if nodo.izq is None and nodo.der is None:
+            if ubicacion == "raiz":
+                self.raiz = None
+            elif ubicacion == "izq":
+                padre.izq = None
+            else:
+                padre.der = None
+
+        # con un hijo
+        elif nodo.izq is None or nodo.der is None:
+            hijo = nodo.izq if nodo.izq else nodo.der
+            if ubicacion == "raiz":
+                self.raiz = hijo
+            if ubicacion == "izq":
+                padre.izq = hijo
+            else:
+                padre.der = hijo
+        
+        # con 2 hijos
+        else:
+            sucesor= nodo.der
+            padre_sucesor = nodo
+            while sucesor.izq is not None:
+                padre_sucesor = sucesor
+                sucesor = sucesor.izq
+            
+            # Reemplazar el valor del nodo con el del sucesor
+            nodo.valor = sucesor.valor
+
+            # Eliminar el sucesor (que tiene como máximo un hijo derecho)
+            if padre_sucesor.izq == sucesor:
+                padre_sucesor.izq = sucesor.der
+            else:
+                padre_sucesor.der = sucesor.der
+        
 
 
 
@@ -228,6 +266,18 @@ arbol.postorden(arbol.raiz)
 print("\nRecorrido Inorden:")
 arbol.inorden(arbol.raiz)
 
+nodo, padre, ubicacion, h_izq, h_der = arbol.buscar(3)
+if nodo:
+    print(f"✅ Encontrado: {nodo.valor}")
+    print(f"🔹 Padre: {padre.valor if padre else 'Ninguno (es raíz)'}")
+    print(f"🔹 Ubicación: {ubicacion}")
+    print(f"🔹 Hijo izquierdo: {h_izq}")
+    print(f"🔹 Hijo derecho: {h_der}")
+else:
+    print("❌ No encontrado")
+
+arbol.eliminar(3)
+print("despues de eliminar el 3")
 nodo, padre, ubicacion, h_izq, h_der = arbol.buscar(3)
 if nodo:
     print(f"✅ Encontrado: {nodo.valor}")
