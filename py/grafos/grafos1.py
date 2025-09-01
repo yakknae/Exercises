@@ -1,3 +1,5 @@
+from collections import deque
+
 grafo = {}
 
 # -- 1.Agregar nodo
@@ -78,6 +80,58 @@ def eliminar_nodo(grafo,nodo):
     del grafo[nodo]
     print(f"Nodo: {nodo} eliminado")
 
+# -- 11.BFS
+def BFS(grafo,inicio,objetivo):
+    cola = deque([inicio])
+    visitados = set()
+
+    while cola:
+         nodo = cola.popleft
+         print(f"Visitando al nodo: {nodo}")
+
+         if nodo == objetivo:
+              print("encontrado")
+              return True
+         
+         visitados.add(nodo)
+
+         for vecino in grafo[nodo]:
+              if vecino not in visitados:
+                   cola.append(vecino)
+    print("No encontrado")
+    return False
+
+# -- 11.DFS
+def DFS(grafo,nodo,objetivo,visitados=None):
+     if visitados is None:
+          visitados = set()
+
+     print(f"Visitando al nodo: {nodo}") 
+
+     if nodo == objetivo:
+        print("encontrado")
+        return True
+     visitados.add(nodo)
+
+     for vecino in grafo[nodo]:
+          if vecino not in visitados:
+               if DFS(grafo,nodo,objetivo,visitados):
+                    return True
+     return False
+
+#-- 12.Todos los caminos
+def todos_los_caminos(grafo,inicio,fin,camino=[]):
+     camino = camino + [inicio]
+     if inicio == fin:
+          return[camino]
+     caminos=[]
+     for vecino in grafo[inicio]:
+          if vecino not in camino:
+               nuevo_camino = todos_los_caminos(grafo,vecino,fin,camino)
+          caminos.extend(nuevo_camino)
+     return caminos
+
+
 # -- MENU
 def menu():
     print("\n=== Menú de Grafo ===")
@@ -89,9 +143,12 @@ def menu():
     print("6. Mostrar todos los nodos")
     print("7. Mostrar grafo")
     print("8. Grado de un nodo")
-    print("9. Eliminar arista")
-    print("10. Eliminar nodo")
-    print("11. Salir")
+    print("9. BFS")
+    print("10. DFS")
+    print("11. Todos los caminos")
+    print("12. Eliminar arista")
+    print("13. Eliminar nodo")
+    print("14. Salir")
 
 #-----------------------------------------------------------------------------
 agregar_nodo(grafo,'A')
@@ -159,19 +216,32 @@ if __name__ == "__main__":
              resultado = grado_nodo(grafo,valor)
              print(resultado)
         elif opcion == '9':
+                inicio = input("Inicio 1: ")
+                objetivo = input("Objetivo 2: ")
+                resultado = BFS(grafo,inicio,objetivo)
+                print(resultado)
+        elif opcion == '10':
+                nodo = input("Nodo : ")
+                objetivo = input("Objetivo: ")
+                resultado = DFS(grafo,nodo,objetivo)
+                print(resultado)
+        elif opcion == '11':
+                inicio = input("Nodo inicio: ")
+                fin = input("Nodo final: ")
+                resultado = todos_los_caminos(grafo,inicio,fin)
+                print(resultado)
+        elif opcion == '12':
                 n1 = input("Nodo 1: ")
                 n2 = input("Nodo 2: ")
                 eliminar_arista(grafo,n1,n2)
-        elif opcion == '10':
+        elif opcion == '13':
                 valor = input("Que nodo queres eliminar: ")
                 eliminar_nodo(grafo,valor)
-        elif opcion == '11':
+        elif opcion == '13':
                 print("saliendo del programa...")
                 break
         else:
             print("Opcion no valida")
 
     
-# funciones a agregar
-
 
