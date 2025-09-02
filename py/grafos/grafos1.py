@@ -56,7 +56,74 @@ def grado_nodo(grafo,nodo):
      else:
           return -1
 
-# -- 9.Eliminar una arista
+
+
+# -- 9.BFS
+def BFS(grafo, inicio, objetivo):
+    if inicio == objetivo:
+        return [inicio]
+
+    cola = deque([(inicio, [inicio])])
+    visitados = set([inicio])
+
+    while cola:
+        nodo, camino = cola.popleft()
+        print(f"Visitando al nodo: {nodo}")
+
+        for vecino in grafo[nodo]:
+            if vecino == objetivo:
+                print("¡Objetivo encontrado!")
+                return camino + [vecino]
+
+            if vecino not in visitados:
+                visitados.add(vecino)
+                nuevo_camino = camino + [vecino]
+                cola.append((vecino, nuevo_camino))
+
+    print("No encontrado")
+    return None
+
+# -- 10.DFS
+def DFS(grafo,nodo,objetivo,visitados=None,camino=None):
+     if visitados is None:
+          visitados = set()
+     if camino is None:
+          camino = []
+     
+
+     print(f"Visitando al nodo: {nodo}") 
+     camino.append(nodo)
+     if nodo == objetivo:
+        print("encontrado")
+        return True
+     visitados.add(nodo)
+
+     for vecino in grafo[nodo]:
+          if vecino not in visitados:
+               if DFS(grafo,vecino,objetivo,visitados):
+                    return True
+     camino.pop()
+     return False
+    
+#-- 11.Todos los caminos
+def todos_los_caminos(grafo,inicio,fin,camino=None):
+     if camino is None: 
+          camino = []
+
+     camino = camino + [inicio]
+
+     if inicio == fin:
+          return[camino]
+     
+     caminos=[]
+
+     for vecino in grafo[inicio]:
+          if vecino not in camino:
+               nuevo_camino = todos_los_caminos(grafo,vecino,fin,camino)
+               caminos.extend(nuevo_camino)
+     return caminos
+
+# -- 12.Eliminar una arista
 def eliminar_arista(grafo,n1,n2):
     if n1 in grafo and n2 in grafo:
         if n2 in grafo[n1]:
@@ -67,7 +134,7 @@ def eliminar_arista(grafo,n1,n2):
     else:
          print(f"No hay una arista entre los nodos: {n1} y {n2}")
 
-# -- 10.Eliminar un nodo
+# -- 13.Eliminar un nodo
 def eliminar_nodo(grafo,nodo):
     if nodo not in grafo:
         return 
@@ -79,58 +146,6 @@ def eliminar_nodo(grafo,nodo):
         
     del grafo[nodo]
     print(f"Nodo: {nodo} eliminado")
-
-# -- 11.BFS
-def BFS(grafo,inicio,objetivo):
-    cola = deque([inicio])
-    visitados = set()
-
-    while cola:
-         nodo = cola.popleft
-         print(f"Visitando al nodo: {nodo}")
-
-         if nodo == objetivo:
-              print("encontrado")
-              return True
-         
-         visitados.add(nodo)
-
-         for vecino in grafo[nodo]:
-              if vecino not in visitados:
-                   cola.append(vecino)
-    print("No encontrado")
-    return False
-
-# -- 11.DFS
-def DFS(grafo,nodo,objetivo,visitados=None):
-     if visitados is None:
-          visitados = set()
-
-     print(f"Visitando al nodo: {nodo}") 
-
-     if nodo == objetivo:
-        print("encontrado")
-        return True
-     visitados.add(nodo)
-
-     for vecino in grafo[nodo]:
-          if vecino not in visitados:
-               if DFS(grafo,nodo,objetivo,visitados):
-                    return True
-     return False
-
-#-- 12.Todos los caminos
-def todos_los_caminos(grafo,inicio,fin,camino=[]):
-     camino = camino + [inicio]
-     if inicio == fin:
-          return[camino]
-     caminos=[]
-     for vecino in grafo[inicio]:
-          if vecino not in camino:
-               nuevo_camino = todos_los_caminos(grafo,vecino,fin,camino)
-          caminos.extend(nuevo_camino)
-     return caminos
-
 
 # -- MENU
 def menu():
@@ -154,19 +169,24 @@ def menu():
 agregar_nodo(grafo,'A')
 agregar_nodo(grafo,'B')
 agregar_nodo(grafo,'C')
+agregar_nodo(grafo,'D')
+agregar_nodo(grafo,'E')
 
 agregar_arista(grafo,'A','B')
-agregar_arista(grafo,'A','C')
+agregar_arista(grafo,'A','E')
+agregar_arista(grafo,'C','B')
+agregar_arista(grafo,'D','C')
+agregar_arista(grafo,'E','D')
 
 print(estan_conectados(grafo,'A','B'))
-print(estan_conectados(grafo,'A','C'))
 print(estan_conectados(grafo,'A','D'))
+print(estan_conectados(grafo,'C','B'))
+print(estan_conectados(grafo,'D','C'))
+
 
 print(grafo)
 
 print(mostrar_nodo(grafo,'C'))
-
-eliminar_nodo(grafo,'C')
 
 print(mostrar_nodo(grafo,'C'))
 
@@ -223,8 +243,8 @@ if __name__ == "__main__":
         elif opcion == '10':
                 nodo = input("Nodo : ")
                 objetivo = input("Objetivo: ")
-                resultado = DFS(grafo,nodo,objetivo)
-                print(resultado)
+                camino = DFS(grafo,nodo,objetivo)
+                print(f"Camino encontrado: {camino}")
         elif opcion == '11':
                 inicio = input("Nodo inicio: ")
                 fin = input("Nodo final: ")
