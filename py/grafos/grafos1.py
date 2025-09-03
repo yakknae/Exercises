@@ -1,6 +1,13 @@
 from collections import deque
 
-grafo = {}
+grafo = {
+    'a': [('b', 1), ('f', 8),('d',5)],
+    'b': [('a', 1), ('c', 100),('e',10)],
+    'c': [('b', 100), ('d', 4),('f',3)],
+    'd': [('e', 7), ('c', 4),('a',5)],
+    'e': [('f', 2), ('d', 7),('b',10)],
+    'f': [('a', 8), ('e', 2),('c',3)]
+}
 
 # -- 1.Agregar nodo
 def agregar_nodo(grafo,nodo):
@@ -106,20 +113,21 @@ def DFS(grafo,nodo,objetivo,visitados=None,camino=None):
      return False
     
 #-- 11.Todos los caminos
-def todos_los_caminos(grafo,inicio,fin,camino=None):
+def todos_los_caminos(grafo,inicio,fin,camino=None,costo_total=0):
      if camino is None: 
           camino = []
+          
 
      camino = camino + [inicio]
 
      if inicio == fin:
-          return[camino]
+          return[(camino,costo_total)]
      
      caminos=[]
 
-     for vecino in grafo[inicio]:
+     for vecino,peso in grafo[inicio]:
           if vecino not in camino:
-               nuevo_camino = todos_los_caminos(grafo,vecino,fin,camino)
+               nuevo_camino = todos_los_caminos(grafo,vecino,fin,camino,costo_total+peso)
                caminos.extend(nuevo_camino)
      return caminos
 
@@ -166,17 +174,23 @@ def menu():
     print("14. Salir")
 
 #-----------------------------------------------------------------------------
-agregar_nodo(grafo,'A')
-agregar_nodo(grafo,'B')
-agregar_nodo(grafo,'C')
-agregar_nodo(grafo,'D')
-agregar_nodo(grafo,'E')
+#agregar_nodo(grafo,'A')
+#agregar_nodo(grafo,'B')
+#agregar_nodo(grafo,'C')
+#agregar_nodo(grafo,'D')
+#agregar_nodo(grafo,'E')
+#agregar_nodo(grafo,'F')
 
-agregar_arista(grafo,'A','B')
-agregar_arista(grafo,'A','E')
-agregar_arista(grafo,'C','B')
-agregar_arista(grafo,'D','C')
-agregar_arista(grafo,'E','D')
+#agregar_arista(grafo,'A','B')
+#agregar_arista(grafo,'A','F')
+#agregar_arista(grafo,'A','D')
+#agregar_arista(grafo,'B','C')
+#agregar_arista(grafo,'C','D')
+#agregar_arista(grafo,'D','E')
+#agregar_arista(grafo,'E','F')
+#agregar_arista(grafo,'B','E')
+#agregar_arista(grafo,'C','F')
+
 
 print(estan_conectados(grafo,'A','B'))
 print(estan_conectados(grafo,'A','D'))
@@ -248,8 +262,21 @@ if __name__ == "__main__":
         elif opcion == '11':
                 inicio = input("Nodo inicio: ")
                 fin = input("Nodo final: ")
-                resultado = todos_los_caminos(grafo,inicio,fin)
-                print(resultado)
+                caminos = todos_los_caminos(grafo,inicio,fin)
+                #Camino mas barato
+                camino_mas_barato=caminos[0][0]
+                menor_costo=caminos[0][1]
+
+                for camino,precio in caminos:
+                    print(f"Camino: {camino} - Precio total: {precio}")
+
+                for camino,precio in caminos:
+                    if precio < menor_costo:
+                         menor_costo=precio
+                         camino_mas_barato=camino
+
+                print(f"El camino más barato es: {camino_mas_barato} con un valor de {menor_costo}")
+
         elif opcion == '12':
                 n1 = input("Nodo 1: ")
                 n2 = input("Nodo 2: ")
@@ -264,4 +291,3 @@ if __name__ == "__main__":
             print("Opcion no valida")
 
     
-
