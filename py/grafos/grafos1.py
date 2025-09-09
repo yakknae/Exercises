@@ -1,4 +1,5 @@
 from collections import deque
+import heapq
 
 grafo = {
     'a': [('b', 1), ('f', 8),('d',5)],
@@ -155,6 +156,28 @@ def eliminar_nodo(grafo,nodo):
     del grafo[nodo]
     print(f"Nodo: {nodo} eliminado")
 
+# -- 14. Dijkstra
+def dijkstra(grafo,inicio):
+     distancias = {nodo:float('inf') for nodo in grafo}
+     distancias[inicio] = 0
+
+     cola = [(0,inicio)]
+
+     while cola:
+          distancia_actual, nodo_actual = heapq.heappop(cola)
+
+          if distancia_actual > distancias[nodo_actual]:
+               continue
+          
+          for vecino, peso in grafo[nodo_actual]:
+               nueva_distancia = distancia_actual + peso
+
+               if nueva_distancia < distancias[vecino]:
+                    distancias[vecino] = nueva_distancia
+                    heapq.heappush(cola,(nueva_distancia,vecino))
+                    
+     return distancias
+
 # -- MENU
 def menu():
     print("\n=== Menú de Grafo ===")
@@ -171,7 +194,8 @@ def menu():
     print("11. Todos los caminos")
     print("12. Eliminar arista")
     print("13. Eliminar nodo")
-    print("14. Salir")
+    print("14. Dijkstra")
+    print("15. Salir")
 
 #-----------------------------------------------------------------------------
 #agregar_nodo(grafo,'A')
@@ -284,7 +308,14 @@ if __name__ == "__main__":
         elif opcion == '13':
                 valor = input("Que nodo queres eliminar: ")
                 eliminar_nodo(grafo,valor)
-        elif opcion == '13':
+        elif opcion == '14':
+                inicio = input("Elije el nodo de inicio: ")
+                distancias = dijkstra(grafo,inicio)
+                print("Distancias más cortas desde", inicio)
+                for nodo, distancia in distancias.items():
+                    print(f"{inicio} -> {nodo}: {distancia}")
+                     
+        elif opcion == '15':
                 print("saliendo del programa...")
                 break
         else:
