@@ -178,6 +178,36 @@ def dijkstra(grafo,inicio):
                     
      return distancias
 
+# -- 15. Dijkstra sin metodos
+def dijkstra_manual(grafo,inicio):
+     distancias = {nodo:float('inf') for nodo in grafo}
+     distancias[inicio] = 0
+
+     visitados = set()
+
+     while True:
+          nodo_actual = None
+          min_distancia = float('inf')
+          for nodo in grafo:
+            if nodo not in visitados and distancias[nodo] < min_distancia:
+                 min_distancia = distancias[nodo]
+                 nodo_actual = nodo
+
+          if nodo_actual is None:
+               break
+          
+          visitados.add(nodo_actual)
+
+          for vecino, peso in grafo[nodo_actual]:
+               nueva_distancia = distancias[nodo_actual] + peso
+
+               if nueva_distancia < distancias[vecino]:
+                    distancias[vecino] = nueva_distancia
+
+     return distancias
+                    
+
+
 # -- MENU
 def menu():
     print("\n=== Menú de Grafo ===")
@@ -195,7 +225,8 @@ def menu():
     print("12. Eliminar arista")
     print("13. Eliminar nodo")
     print("14. Dijkstra")
-    print("15. Salir")
+    print("15. Dijkstra sin metodos")
+    print("16. Salir")
 
 #-----------------------------------------------------------------------------
 #agregar_nodo(grafo,'A')
@@ -236,6 +267,7 @@ if __name__ == "__main__":
     while True:
         menu()
         opcion = input("ingrese una opcion del 1 al 7 ('0' para salir): ")
+        
         if opcion == '1':
                 valor = input("Que nodo queres agregar: ")
                 if valor:
@@ -243,6 +275,7 @@ if __name__ == "__main__":
                     print(f"Nodo: {valor} insertado")
                 else:
                     print("no se pudo agregar el nodo")
+
         elif opcion == '2':
                 n1 = input("Nodo 1: ")
                 n2 = input("Nodo 2: ")
@@ -251,38 +284,47 @@ if __name__ == "__main__":
                     print(f"Arista: entre {n1} y {n2} insertada")
                 else:
                     print("no se pudo agregar la arista")
+
         elif opcion == '3':
                 print("Que nodos queres verificar si estan conectados?: ")
                 valor = input("Nodo 1: ")
                 valor2 = input("Nodo 2: ")
                 resultado = estan_conectados(grafo,valor,valor2)
                 print("Sí" if resultado else "No")
+
         elif opcion == '4':
              valor = input("Cual nodo queres verificar si esta aislado: ")
              es_aislado(grafo,valor)
+
         elif opcion == '5':
             valor = input("Cual nodo queres buscar: ")
             resultado = mostrar_nodo(grafo,valor)
             print(resultado)
+
         elif opcion == '6':
              resultado = lista_nodo(grafo)
              print(resultado)
+
         elif opcion == '7':
              mostar_grafo(grafo)
+
         elif opcion == '8':
              valor = input("De que nodo queres saber su grado: ")
              resultado = grado_nodo(grafo,valor)
              print(resultado)
+
         elif opcion == '9':
                 inicio = input("Inicio 1: ")
                 objetivo = input("Objetivo 2: ")
                 resultado = BFS(grafo,inicio,objetivo)
                 print(resultado)
+
         elif opcion == '10':
                 nodo = input("Nodo : ")
                 objetivo = input("Objetivo: ")
                 camino = DFS(grafo,nodo,objetivo)
                 print(f"Camino encontrado: {camino}")
+
         elif opcion == '11':
                 inicio = input("Nodo inicio: ")
                 fin = input("Nodo final: ")
@@ -305,17 +347,26 @@ if __name__ == "__main__":
                 n1 = input("Nodo 1: ")
                 n2 = input("Nodo 2: ")
                 eliminar_arista(grafo,n1,n2)
+
         elif opcion == '13':
                 valor = input("Que nodo queres eliminar: ")
                 eliminar_nodo(grafo,valor)
+
         elif opcion == '14':
                 inicio = input("Elije el nodo de inicio: ")
                 distancias = dijkstra(grafo,inicio)
                 print("Distancias más cortas desde", inicio)
                 for nodo, distancia in distancias.items():
                     print(f"{inicio} -> {nodo}: {distancia}")
-                     
+
         elif opcion == '15':
+                inicio = input("Elije el nodo de inicio: ")
+                distancias = dijkstra(grafo,inicio)
+                print("Distancias más cortas desde", inicio)
+                for nodo, distancia in distancias.items():
+                    print(f"{inicio} -> {nodo}: {distancia}")
+                     
+        elif opcion == '16':
                 print("saliendo del programa...")
                 break
         else:
