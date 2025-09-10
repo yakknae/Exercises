@@ -206,7 +206,28 @@ def dijkstra_manual(grafo,inicio):
 
      return distancias
                     
+# -- Bellman Ford
 
+def bellman(grafo,inicio):
+     aristas = []
+     distancias = {nodo:float('inf') for nodo in grafo}
+     distancias[inicio] = 0
+
+     for nodo in grafo:
+          for (destino,peso) in grafo[nodo]:
+               aristas.append((nodo,destino,peso))
+
+     for _ in range(len(grafo)-1):
+          for (nodo,destino,peso) in aristas:
+               if distancias[nodo] + peso < distancias[destino]:
+                    distancias[destino] = distancias[nodo] + peso
+    
+     for (nodo,destino,peso) in aristas:
+               if distancias[nodo] + peso < distancias[destino]:
+                print("El grafo contiene un ciclo de peso negativo")
+                return None
+
+     return distancias
 
 # -- MENU
 def menu():
@@ -226,7 +247,8 @@ def menu():
     print("13. Eliminar nodo")
     print("14. Dijkstra")
     print("15. Dijkstra sin metodos")
-    print("16. Salir")
+    print("16. Bellman Ford")
+    print("17. Salir")
 
 #-----------------------------------------------------------------------------
 #agregar_nodo(grafo,'A')
@@ -367,6 +389,12 @@ if __name__ == "__main__":
                     print(f"{inicio} -> {nodo}: {distancia}")
                      
         elif opcion == '16':
+                inicio = input("Elije el nodo de inicio: ")
+                distancias = bellman(grafo,inicio)
+                for nodo in distancias:
+                    print(f"a → {nodo} = {distancias[nodo]}")
+
+        elif opcion == '17':
                 print("saliendo del programa...")
                 break
         else:
