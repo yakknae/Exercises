@@ -16,16 +16,16 @@ grafo = {
 
 grafo2 = {
     # Trenes (nodos grandes)
-    'A': [('B', 40), ('C', 30), ('A1', 10)],
-    'B': [('D', 30)],
-    'C': [('D', 60), ('C1', 10)],
-    'D': [],
+    'a': [('b', 40), ('c', 30), ('a1', 10)],
+    'b': [('d', 30)],
+    'c': [('d', 60), ('c1', 10)],
+    'd': [],
 
     # Subtes (nodos pequeños)
-    'A1': [('B1', 38)],
-    'B1': [('B', 10), ('D1', 20)],
-    'C1': [('A1', 30), ('D1', 25)],
-    'D1': [('D', 2)]
+    'a1': [('b1', 38)],
+    'b1': [('b', 10), ('d1', 20)],
+    'c1': [('a1', 30), ('d1', 25)],
+    'd1': [('d', 2)]
 }
 
 grafo3 = {
@@ -42,6 +42,15 @@ grafo3 = {
 
 }
 
+# -- menu
+def menu():
+     print("""
+     1. Mostrar grafo
+     2. Dijkstra
+     3. Todos los caminos
+     4. Bellman Ford
+     5. DFS sin aristas negativas
+     """)
 
 # -- Mostrar grafo
 def mostar_grafo(grafo):
@@ -113,9 +122,34 @@ def todos_los_caminos(grafo,inicio,fin,camino=None,costo_total=0):
                caminos.extend(nuevo_camino)
      return caminos
 
+# -- DFS sin aristas negativas
+def dfs_sin_aristas_negativas(grafo, origen, visitados=None, camino_actual=None, todos_caminos=None):
+    if visitados is None:
+        visitados = set()
+    if camino_actual is None:
+        camino_actual = [origen]
+    if todos_caminos is None:
+        todos_caminos = []
+
+    visitados.add(origen)
+    todos_caminos.append(camino_actual.copy())
+
+    for vecino, peso in grafo.get(origen, []):
+        if peso < 0:
+            # 🚫 Camino no válido: no seguimos por esta arista
+            print(f"⚠️  Camino {' -> '.join(camino_actual)} -> {vecino} descartado (peso negativo: {peso})")
+            continue  # ¡simplemente saltamos esta arista!
+
+        if vecino not in visitados:
+            dfs_sin_aristas_negativas(
+                grafo, vecino, visitados.copy(), camino_actual + [vecino], todos_caminos
+            )
+
+    return todos_caminos
 
 if __name__ == "__main__":
     while(True):
+        menu()
         opcion = input("elige una opcion: ")
         if opcion == '1':
          resultado = mostar_grafo(grafo3)
@@ -130,7 +164,7 @@ if __name__ == "__main__":
         elif opcion == '3':
                 inicio = input("Nodo inicio: ")
                 fin = input("Nodo final: ")
-                caminos = todos_los_caminos(grafo2,inicio,fin)
+                caminos = todos_los_caminos(grafo3,inicio,fin)
                 #Camino mas barato
                 camino_mas_barato=caminos[0][0]
                 menor_costo=caminos[0][1]
@@ -147,3 +181,10 @@ if __name__ == "__main__":
 
         elif opcion == '4':    
             print(bellman_ford(grafo3, 'a'))
+
+        elif opcion == '5':
+            inicio = input("Nodo inicio: ")
+            todos_caminos = dfs_sin_aristas_negativas(grafo3, inicio)
+            print(f"Todos los caminos desde {inicio} sin aristas negativas:")
+            for camino in todos_caminos:
+                print(" -> ".join(camino))
