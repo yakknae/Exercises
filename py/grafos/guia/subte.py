@@ -42,6 +42,94 @@ grafo3 = {
 
 }
 
+grafo4 = {
+    '1': [('4', 3), ('3', 2), ('2', 3)],
+    '2': [('3', 1), ('5', 5),('1',3)],
+    '3': [('1', 2), ('2', 1), ('4', 2), ('6', 8), ('5', 7)],
+    '4': [('1', 3), ('3', 2), ('6', 6)],
+    '5': [('2', 5), ('3', 7), ('6', 4)],
+    '6': [('4', 6), ('3', 8), ('5', 4)]
+}
+
+def prim(grafo, inicio):
+    visitados = set()
+    mst = []
+    peso_total = 0
+
+    # Cola de prioridad: (peso, nodo_origen, nodo_destino)
+    aristas = []
+    visitados.add(inicio)
+
+    for vecino, peso in grafo[inicio]:
+        heapq.heappush(aristas, (peso, inicio, vecino))
+
+    while aristas and len(visitados) < len(grafo):
+        peso, u, v = heapq.heappop(aristas)
+
+        if v not in visitados:
+            visitados.add(v)
+            mst.append((u, v, peso))
+            peso_total += peso
+
+            for vecino, peso2 in grafo[v]:
+                if vecino not in visitados:
+                    heapq.heappush(aristas, (peso2, v, vecino))
+
+    return mst, peso_total
+
+
+# Implementación de Kruskal con Union-Find
+# Estructura Union-Find
+class UnionFind:
+    def __init__(self, vertices):
+        self.padre = {v: v for v in vertices}
+        self.rango = {v: 0 for v in vertices}
+
+    def find(self, v):
+        if self.padre[v] != v:
+            self.padre[v] = self.find(self.padre[v])  # compresión de caminos
+        return self.padre[v]
+
+    def union(self, u, v):
+        raiz_u = self.find(u)
+        raiz_v = self.find(v)
+
+        if raiz_u != raiz_v:
+            if self.rango[raiz_u] < self.rango[raiz_v]:
+                self.padre[raiz_u] = raiz_v
+            elif self.rango[raiz_u] > self.rango[raiz_v]:
+                self.padre[raiz_v] = raiz_u
+            else:
+                self.padre[raiz_v] = raiz_u
+                self.rango[raiz_u] += 1
+            return True
+        return False
+
+
+def kruskal(grafo):
+    # Crear lista de aristas
+    aristas = []
+    for nodo in grafo:
+        for vecino, peso in grafo[nodo]:
+            aristas.append((peso, nodo, vecino))
+
+    # Ordenar aristas por peso
+    aristas.sort()
+
+    # Inicializar Union-Find
+    uf = UnionFind(grafo.keys())
+
+    mst = []  # guardar aristas del árbol de expansión mínima
+    peso_total = 0
+
+    for peso, u, v in aristas:
+        if uf.union(u, v):
+            mst.append((u, v, peso))
+            peso_total += peso
+
+    return mst, peso_total
+
+
 # -- menu
 def menu():
      print("""
@@ -50,6 +138,8 @@ def menu():
      3. Todos los caminos
      4. Bellman Ford
      5. DFS sin aristas negativas
+     6. Kruskal
+     7. Prim
      """)
 
 # -- Mostrar grafo
@@ -188,3 +278,13 @@ if __name__ == "__main__":
             print(f"Todos los caminos desde {inicio} sin aristas negativas:")
             for camino in todos_caminos:
                 print(" -> ".join(camino))
+        
+        elif opcion == '6':
+            mst, total = kruskal(grafo4)
+            print("Árbol de recubrimiento mínimo:", mst)
+            print("Peso total:", total)
+
+        elif opcion == '7':
+            mst, total = prim(grafo4, '1')
+            print("Árbol de recubrimiento mínimo (Prim):", mst)
+            print("Peso total:", total)
